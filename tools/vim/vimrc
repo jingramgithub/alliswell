@@ -1,0 +1,192 @@
+"set cscopequickfix=f-,s-,c-,d-,i-,t-,e-,g-
+set cst
+
+set nocompatible
+set tags=tags;/home
+
+set vb t_vb=
+"nnoremap <C-k> :exec("grep -irw --exclude=cscope.* ".expand("<cword>")." *")<CR>
+"nnoremap <C-p> :cs find s <C-R>=expand("<cword>")<CR><CR>
+"nnoremap <C-j> :cs find c <C-R>=expand("<cword>")<CR><CR>
+"nnoremap <C-l> :cs find f <C-R>=expand("<cword>")<CR><CR>
+
+"switch between the file and its ob.cpp file
+"noremap <F5> :tabnew %:p:h/ob/%:t:rOb.cpp<CR>
+"noremap <F2> :e %:p:h/%:t:r.cpp<CR>
+"switch between .h and .ob
+"noremap <F2> :e %:p:s,.cpp$,.X123X,:s,.ob$,.cpp,:s,.X123X$,.ob,<CR>
+"noremap <F2> :e %:p:s,.h$,.X123X,:s,.ob$,.h,:s,.X123X$,.ob,<CR>
+
+"switch between .h and .cpp file
+"noremap <f4> :e %<.h<CR>
+"
+"
+noremap <C-H> :tabnew %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
+noremap <C-h> :vsplit %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
+
+"explore directory in which current file lies
+noremap <C-e> :Explore<CR>
+
+"open the buffer of opened files.
+noremap <C-b> :BufExplorer<CR>
+
+"word completion while editing
+inoremap <Tab> <C-p>
+
+"command! -nargs=* -complete=dir CC cscope find f \<<args>
+"command! -nargs=* -complete=dir CD cscope find s <args>
+
+map <t-n> :tabnew<C-m>
+map <C-q> :q!<CR>
+map <C-s> :wq!<CR>
+map <C-o> :TlistOpen<CR>
+map <C-c> :TlistClose<CR>
+map <M-w> <C-W>w
+map <C-]> :exec("tag ".expand("<cword>"))<CR>
+
+"window resize
+map <M-UP> :resize +2<CR>
+map <M-DOWN> :resize -2<CR>
+map <M-RIGHT> :vertical resize +2<CR>
+map <M-LEFT> :vertical resize -2<CR>
+
+"all cscope output in quickfix window.
+set cscopequickfix=c-,
+
+"Find all references of symbol
+map fs :vsplit<CR>:Lid<CR><CR>:res 15<CR>
+map cs :Lid <CR><CR>
+
+"Find definition
+"map fd :split<CR>:cs find g <cword><CR>
+map fd :cs find g <cword><CR>
+
+"Find functions calling this function
+map fc :vsplit<CR>:cs find c <cword><CR>
+"map cc :cs find c <cword><CR>
+
+"Find functions calling this function
+map ft :split<CR>:cs find t <cword><CR>
+map ct :cs find t <cword><CR>
+
+"Find egrep pattern
+map fg :split<CR>:cs find e <cword><CR>
+map cg :cs find e <cword><CR>
+
+"Find file
+map ff :tabnew<CR>:cs find f
+map cf :cs find f
+
+"close quickfix windows.
+map cc 1<C-w>w <C-w>o
+
+"Find file #including this file
+"map fi :tabnew<CR>:cs find i <cfile><CR>
+
+"Find functions called by this function
+"map fd :split<CR>:cs find d <cword><CR>
+
+"Get the list of next options :cw
+"map fn :q!<CR>:tabnew<CR>:cw<CR>
+
+"p4 checkout file
+map pe :!p4 edit %<CR>
+map pr :!p4 revert %<CR>
+map pa :!p4 add %<CR>
+map pd :!p4 delete %<CR>
+map po :!p4 opened<CR>
+map pl :!p4 filelog % > /tmp/xr.cpp<CR><CR>:tabnew /tmp/xr.cpp<CR>
+map ph :!p4 annotate % > /tmp/xh.cpp<CR><CR>:tabnew /tmp/xh.cpp<CR>
+
+au FileType make set noexpandtab
+"for removing crazy highlighting of the obc .gen files
+au BufRead *.gen set filetype=none
+
+set encoding=utf-8
+set fileencodings=ucs-bom,utf-8,cp936
+set fileencoding=gb2312
+set termencoding=utf-8
+
+set nocompatible
+set ts=4
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+set noeol
+set autoindent
+set smartindent
+set nu
+set ic
+set ruler
+set incsearch
+set hlsearch
+set winaltkeys=no
+set backupdir=/home/***/.vimbackups
+set writebackup
+set showcmd
+set scrolloff=3
+set autowriteall
+set cinoptions+=t0
+set cinoptions+=l1
+set ignorecase
+set gdefault
+set wildignore=*.o
+set guioptions-=T
+set guioptions-=L
+set guioptions-=r
+set showtabline=2
+set guifont=monospace\ 9
+colorscheme zellner
+let g:locateopen_ignorecase = 1
+
+" Only do this part when compiled with support for autocommands.
+if has("autocmd")
+
+  " Enable file type detection.
+  " Use the default filetype settings, so that mail gets 'tw' set to 72,
+  " 'cindent' is on in C files, etc.
+  " Also load indent files, to automatically do language-dependent indenting.
+  filetype plugin indent on
+
+  " For all text files set 'textwidth' to 78 characters.
+  autocmd FileType text setlocal textwidth=78
+
+  " When editing a file, always jump to the last known cursor position.
+  " Don't do it when the position is invalid or when inside an event handler
+  " (happens when dropping a file on gvim).
+  autocmd BufReadPost *
+    \ if line("'\"") > 0 && line("'\"") <= line("$") |
+    \   exe "normal g`\"" |
+    \ endif
+
+endif " has("autocmd")
+
+let loaded_matchparen = 1
+noremap <C-f> :FF<CR><C-x><C-o>
+
+let Grep_Default_Filelist = '*.c *.cpp *.h'
+"always keep the quickfix window at fixed size
+autocmd FileType qf resize 6
+autocmd FileType qf set nowrap
+"au FileType qf call AdjustWindowHeight(4, 8)
+"function! AdjustWindowHeight(minheight, maxheight)
+"   exe max([min([line("$"), a:maxheight]), a:minheight]) . "wincmd _"
+"endfunction
+
+
+"noremap <M-Space> <ESC>
+highlight Todo none
+
+autocmd BufRead,BufNewFile *.ob set filetype=ob
+autocmd Syntax ob runtime! syntax/ob.vim
+
+autocmd BufRead,BufNewFile *.slog set filetype=slog
+autocmd Syntax slog runtime! syntax/slog.vim
+autocmd BufRead */obc/* let Grep_Default_Filelist='*'
+
+au BufRead,BufNewFile *.yang      set filetype=yang
+au BufRead,BufNewFile *.atom      set filetype=cpp
+au BufRead,BufNewFile *.mod       set filetype=cpp
+au BufRead,BufNewFile *.process   set filetype=process
+au BufRead,BufNewFile *.library   set filetype=process
+
